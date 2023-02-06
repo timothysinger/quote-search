@@ -33,7 +33,7 @@
           <button
             v-on:click.prevent="getRandomQuote(authorSlug)"
             type="submit"
-            class="ui-elem btn"
+            class="ui-elem btn random-btn"
             >
             Get Quote
           </button>
@@ -85,12 +85,14 @@
         this.quote = "";
         this.authorName = "";
         this.random = false;
-        this.authorInfo = true;
         this.bio = "";
         this.noSuchAuthor = false;
       },
       search(searchTerm) {
         this.searchTerm = searchTerm;
+        if(this.searchTerm != "") {
+          this.authorInfo = true;
+        }
         this.resetFields()
         getAuthorBySlug(searchTerm)
         .then(data => data.results)
@@ -125,7 +127,7 @@
     width: 60%;
   }
   .navbar {
-    margin: 50px;
+    margin: 30px;
   }
 
   .searchbar {
@@ -146,6 +148,6 @@
   }
 
   .random-btn {
-    margin-right: 20px;
+    margin: 20px;
   }
   </style>
