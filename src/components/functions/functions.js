@@ -1,19 +1,17 @@
+import axios from 'axios';
 
-export function getResults(query1, query2) {
+export function getRandom(author) {
+    const promise = axios.get("https://api.quotable.io/random?author=" + author)
 
-    const promise = axios.get("https://images-api.nasa.gov/search?q=" + query1 + "&media_type=" + query2)
-
-    const datapromise = promise.then((response) => response.data.collection.items)
+    const datapromise = promise.then((response) => response.data)
 
     return datapromise
 }
 
-export function getRandom2() {
-    return promise = axios.get("https://api.quotable.io/random")
-}
+export function getAuthorBySlug(searchTerm) {
+    const promise = axios.get("https://api.quotable.io/search/authors?query=" + searchTerm)
 
+    const datapromise = promise.then((response) => response.data)
 
-
-export function getRandom() {
-    const promise = axios.get("https://api.quotable.io/random", { responseType: "json" }).then(function(response) { return response.data})
+    return datapromise
 }

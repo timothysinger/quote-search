@@ -1,4 +1,4 @@
-# vue-starter-project
+# Quote Search
 
 ## Project setup
 ```

@@ -1,11 +1,12 @@
   <template>
     <div class="RandomQuote">
-      <h1>Timothy Singer's Quote Search</h1>
-      <form class="searchbar">
+      <h1>Random Quote Fetcher</h1>
+      <h2>By Timothy Singer</h2>
+      <form class="navbar">
         <button
-          v-on:click.prevent="getRandom('')"
+          v-on:click.prevent="getRandomQuote('')"
           type="submit"
-          class=""
+          class="ui-elem btn random-btn"
         >
           Get Random Quote
         </button>
@@ -13,12 +14,12 @@
           type="text"
           placeholder="Search for author"
           v-model="input"
-          class="navbar-elem"
+          class="ui-elem searchbar"
         />
         <button
           v-on:click.prevent="search(input)"
           type="submit"
-          class="navbar-elem"
+          class="ui-elem btn"
         >
           Search
         </button>
@@ -26,27 +27,31 @@
       <div v-if="authorInfo">
         <p v-if="noSuchAuthor">No author found with search term '{{ searchTerm }}'.</p>
         <div v-else>
-          <h2>{{ authorName }}</h2>
+          <h3>{{ authorName }}</h3>
           <p>{{ bio }}</p>
           
           <button
-            v-on:click.prevent="getRandom(authorSlug)"
+            v-on:click.prevent="getRandomQuote(authorSlug)"
             type="submit"
+            class="ui-elem btn"
             >
             Get Quote
           </button>
-          <p>{{ quote }}</p>
+          <p v-if="quote != ''">"{{ quote }}"</p>
         </div>
       </div>
       <div v-else>
-        <p>{{ quote }}</p>
-        <p>{{ author }}</p>
+        <div v-if="quote != ''">
+          <p>"{{ quote }}"</p>
+          <h3>- {{ authorName }}</h3>
+        </div>
       </div>
     </div>
   </template>
   
   <script>
-  import axios from 'axios';
+  import { getRandom } from "./functions/functions";
+  import { getAuthorBySlug } from "./functions/functions"
 
   export default {
     name: "RandomQuote",
@@ -63,34 +68,31 @@
       }
     },
     created() {
-      this.random = false;
       this.authorInfo = false;
       this.noSuchAuthor = false;
     },
     methods: {
-      getRandom() {
-        if(this.authorSlug == "") {
+      getRandomQuote(author) {
+        if(author == "") {
           this.authorInfo = false;
         }
-        axios
-        .get("https://api.quotable.io/random?author=" + this.authorSlug)
-        .then(response => response.data)
-        .then(data => {
-          this.quote = '"' + data.content + '"';
-          this.author = "- " + data.author;
+        getRandom(author).then(data => {
+          this.quote = data.content;
+          this.authorName = data.author;
         });
       },
-      search(searchTerm) {
+      resetFields() {
         this.quote = "";
         this.authorName = "";
         this.random = false;
         this.authorInfo = true;
         this.bio = "";
-        this.searchTerm = searchTerm;
         this.noSuchAuthor = false;
-        axios
-        .get("https://api.quotable.io/search/authors?query=" + searchTerm)
-        .then(response => response.data)
+      },
+      search(searchTerm) {
+        this.searchTerm = searchTerm;
+        this.resetFields()
+        getAuthorBySlug(searchTerm)
         .then(data => data.results)
         .then(results =>  {
           if(results == "") {
@@ -109,23 +111,41 @@
   <!-- Add "scoped" attribute to limit CSS to this component only -->
   <style scoped>
 
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-  a {
-    color: #42b983;
+  h1 {
+    font-size: 50px;
   }
 
+  h2 {
+    font-size: 25px;
+  }
+
+  p {
+    padding-right: 20%;
+    padding-left: 20%;
+    width: 60%;
+  }
   .navbar {
-    Text-align-last:justify
+    margin: 50px;
   }
 
-  .navbar-elem {
-    margin: 1em;
+  .searchbar {
+    margin-right: 5px;
+  }
+
+  .ui-elem {
+    padding: 12px 22px;
+    border-radius: 20px;
+    border-width: 1px;
+    border: none;
+  }
+
+  .btn {
+    background-color: #202020;
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .random-btn {
+    margin-right: 20px;
   }
   </style>
