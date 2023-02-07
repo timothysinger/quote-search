@@ -1,4 +1,4 @@
-# Quote Search
+# Random Quote Fetcher
 
 ## Project setup
 ```
